@@ -125,11 +125,11 @@ function M.close_buffer_with_pick()
 end
 
 ---@param buffer Buffer
----@param hls table<string, table<string, string>>
+---@param highlights table<string, table<string, string>>
 ---@return table
-local function get_buffer_highlight(buffer, hls)
+local function get_buffer_highlight(buffer, highlights)
   local hl = {}
-  local h = hls
+  local h = highlights
 
   if buffer:current() then
     hl.background = h.buffer_selected.hl
@@ -137,7 +137,7 @@ local function get_buffer_highlight(buffer, hls)
     hl.duplicate = h.duplicate_selected.hl
     hl.pick = h.pick_selected.hl
     hl.separator = h.separator_selected.hl
-    hl.buffer = h.buffer_selected
+    hl.buffer = { hl = buffer.group.highlight } or h.buffer_selected
     hl.diagnostic = h.diagnostic_selected.hl
     hl.error = h.error_selected.hl
     hl.error_diagnostic = h.error_diagnostic_selected.hl
@@ -499,7 +499,7 @@ local function render_buffer(preferences, buffer)
   --- @param index number
   --- @param num_of_bufs number
   --- @returns string
-  local fn = function(index, num_of_bufs)
+  local cb = function(index, num_of_bufs)
     if left_sep then
       buffer_component = left_sep .. buffer_component .. right_sep
     elseif index < num_of_bufs then
@@ -508,7 +508,7 @@ local function render_buffer(preferences, buffer)
     return buffer_component
   end
 
-  return fn, ctx.length
+  return cb, ctx.length
 end
 
 ---@param icon string
@@ -737,6 +737,7 @@ local function bufferline(preferences)
 
   local letters = require("bufferline.letters")
   local duplicates = require("bufferline.duplicates")
+  local groups = require("bufferline.groups")
 
   letters.reset()
   duplicates.reset()
@@ -755,6 +756,7 @@ local function bufferline(preferences)
     duplicates.mark(state.buffers, buf, function(b)
       b.component, b.length = render_buffer(preferences, b)
     end)
+    buf.group = groups.get(buf, options.groups)
     buf.letter = letters.get(buf)
     buf.component, buf.length = render_buffer(preferences, buf)
     state.buffers[i] = buf

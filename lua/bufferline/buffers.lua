@@ -37,6 +37,8 @@ end
 ---@field public modifiable boolean
 ---@field public buftype string
 ---@field public letter string
+---@field public group Group
+---@field public group_fn string
 M.Buffer = {}
 
 ---create a new buffer class
