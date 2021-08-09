@@ -137,7 +137,7 @@ local function get_buffer_highlight(buffer, highlights)
     hl.duplicate = h.duplicate_selected.hl
     hl.pick = h.pick_selected.hl
     hl.separator = h.separator_selected.hl
-    hl.buffer = { hl = buffer.group.highlight } or h.buffer_selected
+    hl.buffer = h.buffer_selected
     hl.diagnostic = h.diagnostic_selected.hl
     hl.error = h.error_selected.hl
     hl.error_diagnostic = h.error_diagnostic_selected.hl
@@ -177,6 +177,8 @@ local function get_buffer_highlight(buffer, highlights)
     hl.info_diagnostic = h.info_diagnostic.hl
     hl.close_button = h.close_button.hl
   end
+
+  require("bufferline.groups").set_current_hl(buffer, h, hl)
 
   return hl
 end
@@ -474,6 +476,7 @@ local function render_buffer(preferences, buffer)
   --- apply diagnostics first since we want the highlight
   --- to only apply to the filename
   ctx.component, ctx.length = require("bufferline.diagnostics").component(ctx)
+  ctx.component, ctx.length = require("bufferline.groups").component(ctx)
 
   ctx.component = ctx.component .. padding
   ctx.length = ctx.length + strwidth(padding)
