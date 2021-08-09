@@ -768,7 +768,9 @@ local function bufferline(preferences)
 
   -- if the user has reshuffled the buffers manually don't try and sort them
   if not state.custom_sort then
-    require("bufferline.sorters").sort_buffers(preferences.options.sort_by, state.buffers)
+    -- if a user specifies groups then always sort by group
+    local sort = options.groups and "group" or options.sort_by
+    require("bufferline.sorters").sort_buffers(sort, state.buffers)
   end
 
   return render(state.buffers, all_tabs, preferences)
