@@ -1,7 +1,7 @@
 local M = {}
 
-local _config = {}
-local _user_config = {}
+local config = {}
+local user_config = {}
 
 ---@class BufferlineOptions
 ---@field public view string
@@ -102,6 +102,8 @@ local function merge(defaults, preferences)
   return preferences
 end
 
+---Derive the colors for the bufferline
+---@return table
 local function derive_colors()
   local colors = require("bufferline.colors")
   local hex = colors.get_hex
@@ -439,26 +441,26 @@ end
 --- @return BufferlineConfig
 function M.apply()
   local defaults = get_defaults()
-  validate_config(_user_config, defaults)
-  convert_hl_tables(_user_config)
-  _config = merge(defaults, _user_config)
-  add_highlight_groups(_config.highlights)
-  return _config
+  validate_config(user_config, defaults)
+  convert_hl_tables(user_config)
+  config = merge(defaults, user_config)
+  add_highlight_groups(config.highlights)
+  return config
 end
 
 ---Keep track of a users config for use throughout the plugin as well as ensuring
 ---defaults are set. This is also so we can diff what the user set this is useful
 ---for setting the highlight groups etc. once this has been merged with the defaults
----@param user_config BufferlineConfig
-function M.set(user_config)
-  _user_config = user_config or {}
+---@param user_conf BufferlineConfig
+function M.set(user_conf)
+  user_config = user_conf or {}
 end
 
 ---Update highlight colours when the colour scheme changes
 function M.update_highlights()
-  _config.highlights = merge(derive_colors(), _user_config.highlights or {})
-  add_highlight_groups(_config.highlights)
-  return _config
+  config.highlights = merge(derive_colors(), user_config.highlights or {})
+  add_highlight_groups(config.highlights)
+  return config
 end
 
 ---Get the user's configuration or a key from it
@@ -466,16 +468,16 @@ end
 ---@return any
 function M.get(key)
   if key and type(key) == "string" then
-    return _config[key]
+    return config[key]
   end
-  return _config
+  return config
 end
 
 --- This function is only intended for use in tests
 ---@private
 function M.__reset()
-  _config = {}
-  _user_config = {}
+  config = {}
+  user_config = {}
 end
 
 return M
