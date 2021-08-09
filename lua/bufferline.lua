@@ -183,7 +183,7 @@ local function get_buffer_highlight(buffer, highlights)
   return hl
 end
 
---- @param mode string | nil
+--- @param mode string?
 local function get_buffers_by_mode(mode)
   --[[
       show only relevant buffers depending on the layout of the current tabpage:
@@ -375,7 +375,7 @@ local function add_suffix(context)
   return component, length
 end
 
---- TODO We increment the buffer length by the separator although the final
+--- TODO: We increment the buffer length by the separator although the final
 --- buffer will not have a separator so we are technically off by 1
 --- @param context table
 local function separator_components(context)
