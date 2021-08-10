@@ -1,6 +1,8 @@
 local M = {}
 
+---@type BufferlineConfig
 local config = {}
+---@type BufferlineConfig
 local user_config = {}
 
 ---@class BufferlineOptions
