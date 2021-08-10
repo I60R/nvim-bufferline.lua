@@ -452,11 +452,20 @@ local function pad_buffer(context)
   return component, length
 end
 
+---@class BufferlineContext
+---@field length string
+---@field component string
+---@field preferences BufferlineOptions
+---@field current_highlights table<string, table<string, string>>
+---@field buffer Buffer
+
 --- @param preferences table
 --- @param buffer Buffer
 --- @return function,number
 local function render_buffer(preferences, buffer)
   local hl = get_buffer_highlight(buffer, preferences.highlights)
+
+  ---@type BufferlineContext
   local ctx = {
     length = 0,
     component = "",
