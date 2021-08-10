@@ -34,6 +34,7 @@ local user_config = {}
 ---@field public diagnostics boolean
 ---@field public diagnostic_indicator function?
 ---@field public offsets table[]
+---@field public groups Group[]
 
 ---Ensure the user has only specified highlight groups that exist
 ---@param prefs table
