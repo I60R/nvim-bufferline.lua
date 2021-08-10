@@ -935,6 +935,21 @@ local function setup_autocommands(preferences)
   utils.augroup({ BufferlineColors = autocommands })
 end
 
+---Execute an action on a group of buffers
+---@param name string
+---@param action 'close' | fun(b: Buffer)
+function M.group_action(name, action)
+  assert(name, "A name must be passed to execute a group action")
+  local groups = require("bufferline.groups")
+  if action == "close" then
+    groups.command(state.buffers, name, function(b)
+      api.nvim_buf_delete(b.id, { force = true })
+    end)
+  elseif type(action) == "function" then
+    groups.command(state.buffers, name, action)
+  end
+end
+
 ---@param preferences BufferlineConfig
 local function setup_mappings(preferences)
   -- TODO: / idea: consider allowing these mappings to open buffers based on their
